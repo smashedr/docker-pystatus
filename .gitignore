@@ -1,0 +1,9 @@
+.idea/
+*.iml
+.coverage
+coverage.xml
+__pycache__/
+*.pyc
+venv/
+*.log
+settings.env
