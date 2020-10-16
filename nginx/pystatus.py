@@ -8,6 +8,8 @@ from jinja2 import Environment, FileSystemLoader
 from requests.packages import urllib3
 from signal import signal, SIGINT, SIGTERM
 
+LOOP_SLEEP = 60
+
 
 class SiteChecks(object):
     def __init__(self, title, desc, url):
@@ -38,7 +40,6 @@ class SiteStatus(object):
 
     def run_checks(self):
         for c in self.checks:
-            print('Processing:', c.url)
             try:
                 c.r = requests.head(c.url, verify=False, timeout=5)
             except Exception as error:
@@ -49,7 +50,6 @@ class SiteStatus(object):
         self.updated = datetime.datetime.now()
 
     def render_template(self):
-        print('Rendering template... ', end='')
         file_loader = FileSystemLoader('source')
         env = Environment(loader=file_loader)
         template = env.get_template('index.jinja2')
@@ -58,7 +58,6 @@ class SiteStatus(object):
         output = template.render(data)
         with open(self.index_file, 'w+') as f:
             f.write(output)
-        print('Done.')
 
     @staticmethod
     def get_conf():
@@ -98,11 +97,17 @@ def sig_handler(signal_received, frame):
 
 
 if __name__ == '__main__':
+    print('Initializing...')
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     signal(SIGINT, sig_handler)
     signal(SIGTERM, sig_handler)
     ss = SiteStatus()
-    print('Initializing with %s checks.' % len(ss.checks))
+    ss.update_status()
+    print('Initialized with %s checks.' % len(ss.checks))
+    time.sleep(LOOP_SLEEP)
     while True:
-        ss.update_status()
-        time.sleep(60)
+        try:
+            ss.update_status()
+            time.sleep(LOOP_SLEEP)
+        except Exception as error:
+            print(error)
