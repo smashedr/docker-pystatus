@@ -5,7 +5,7 @@ nginx
 
 echo "Copying static..."
 cp -r source/static /data/html
-ls -la /data/html
+ls -Ral /data/html
 
 echo "Starting loop..."
 while true;do

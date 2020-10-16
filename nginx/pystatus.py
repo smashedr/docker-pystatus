@@ -2,13 +2,14 @@
 import datetime
 import os
 import requests
+import socket
 import sys
 import time
 from jinja2 import Environment, FileSystemLoader
 from requests.packages import urllib3
 from signal import signal, SIGINT, SIGTERM
 
-LOOP_SLEEP = 60
+SLEEP = 60
 
 
 class SiteChecks(object):
@@ -35,6 +36,8 @@ class SiteStatus(object):
         return 'SiteStatus: %s' % len(self.checks)
 
     def update_status(self):
+        if not self.check_network():
+            raise Exception('No network connectivity detected.')
         self.run_checks()
         self.render_template()
 
@@ -89,6 +92,24 @@ class SiteStatus(object):
             ))
         return checks
 
+    @staticmethod
+    def check_network(timeout=5):
+        try:
+            host = '8.8.8.8'
+            socket.setdefaulttimeout(timeout)
+            socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, 53))
+            return True
+        except socket.error as error:
+            print(error)
+            time.sleep(timeout)
+            host = '1.1.1.1'
+            socket.setdefaulttimeout(timeout)
+            socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, 53))
+            return True
+        except Exception as error:
+            print(error)
+            return False
+
 
 def sig_handler(signal_received, frame):
     print('Signal %s detected, exiting gracefully...' % signal_received)
@@ -104,10 +125,10 @@ if __name__ == '__main__':
     ss = SiteStatus()
     ss.update_status()
     print('Initialized with %s checks.' % len(ss.checks))
-    time.sleep(LOOP_SLEEP)
+    time.sleep(SLEEP)
     while True:
         try:
             ss.update_status()
-            time.sleep(LOOP_SLEEP)
+            time.sleep(SLEEP)
         except Exception as error:
             print(error)

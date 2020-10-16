@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: ./nginx
+    image: harbor01.cssnr.com/shane/slashgif-status-nginx:${VERSION}
+    env_file: "${ENV_FILE}"
+    deploy:
+      replicas: 1
+    volumes:
+      - data_dir:/data
+    secrets:
+      - source: cssnr.com.crt
+        target: /etc/ssl/cssnr.com.crt
+      - source: cssnr.com.key
+        target: /etc/ssl/cssnr.com.key
+    ports:
+      - "${DOCKER_PORT}:443"
+
+secrets:
+  cssnr.com.crt:
+    external: true
+  cssnr.com.key:
+    external: true
+
+volumes:
+  data_dir:
