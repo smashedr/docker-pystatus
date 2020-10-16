@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="noindex, nofollow">
+
+    <title>{{ conf.title }}</title>
+    <link rel="icon" href="{{ conf.favicon }}">
+
+    <meta name="author" content="{{ conf.author }}"/>
+    <meta name="title" content="{{ conf.title }}"/>
+    <meta name="description" content="{{ conf.desc }}"/>
+
+    <meta property="og:author" content="<{{ conf.author }}">
+    <meta property="og:title" content="{{ conf.title }}">
+    <meta property="og:description" content="{{ conf.desc }}">
+
+    {#<meta property="og:type" content="website">#}
+    {#<meta property="og:url" content="{{ conf.xxx }}">#}
+    {#<meta property="og:image" content="{{ conf.xxx }}">#}
+    {#<meta property="og:image:type" content="{{ conf.xxx }}">#}
+
+    <link rel="stylesheet" href="static/bootstrap.min.css">
+    <link rel="stylesheet" href="static/main.css">
+</head>
+<body>
+<div class="container">
+    <div class="text-center">
+        <a href="{{ conf.url }}"><img src="{{ conf.logo }}" alt="SlashGIF" class="img-thumbnail my-2"></a>
+        <h1>{{ conf.title }}</h1>
+        <p class="lead">{{ conf.desc }}</p>
+    </div>
+
+    {% for c in checks %}
+    <div class="card border-{% if c.up %}success{% else %}danger{% endif %} my-2">
+      <div class="card-body">
+          <div class="row">
+              <div class="col-sm-9">
+                  {{ c.title }} - <small>{{ c.desc }}</small>
+              </div>
+              <div class="col-sm-3">
+                  <button type="button" class="btn btn-{% if c.up %}success{% else %}danger{% endif %} mr-2"
+                          style="cursor:default;">{% if c.up %}Online{% else %}Down{% endif %}</button>
+              </div>
+          </div>
+      </div>
+    </div>
+    {% endfor %}
+
+    <div class="text-center my-2">
+        <p>Status Updated on {{ meta.updated.strftime('%D at %T') }}</p>
+    </div>
+
+    <script type="text/javascript" src="static/main.js"></script>
+</div>
+</body>
+</html>

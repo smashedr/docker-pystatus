@@ -1,15 +1,15 @@
 #!/usr/bin/env sh
 
-set -e
-
-echo "Starting nginx."
-
+echo "Starting nginx..."
 nginx
 
-echo "Starting loop..."
+echo "Copying static..."
+cp -r source/static /data/html
+ls -la /data/html
 
+echo "Starting loop..."
 while true;do
     pgrep nginx >/dev/null || exit 1
-    bash status.sh
+    python3 -u pystatus.py
     sleep 60
 done
