@@ -9,7 +9,7 @@ from jinja2 import Environment, FileSystemLoader
 from requests.packages import urllib3
 from signal import signal, SIGINT, SIGTERM
 
-SLEEP = 60
+SLEEP = int(os.getenv('SETTING_SLEEP', 60))
 
 
 class SiteChecks(object):

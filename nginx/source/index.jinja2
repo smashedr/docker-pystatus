@@ -12,14 +12,14 @@
     <meta name="title" content="{{ conf.title }}"/>
     <meta name="description" content="{{ conf.desc }}"/>
 
-    <meta property="og:author" content="<{{ conf.author }}">
+    <meta property="og:author" content="{{ conf.author }}">
     <meta property="og:title" content="{{ conf.title }}">
     <meta property="og:description" content="{{ conf.desc }}">
 
-    {#<meta property="og:type" content="website">#}
-    {#<meta property="og:url" content="{{ conf.xxx }}">#}
-    {#<meta property="og:image" content="{{ conf.xxx }}">#}
-    {#<meta property="og:image:type" content="{{ conf.xxx }}">#}
+    <meta property="og:type" content="website">
+    {#<meta property="og:url" content="{{ conf. }}">#}
+    <meta property="og:image" content="{{ conf.logo }}">
+    <meta property="og:image:type" content="image/png">
 
     <link rel="stylesheet" href="static/bootstrap.min.css">
     <link rel="stylesheet" href="static/main.css">
@@ -35,15 +35,9 @@
     {% for c in checks %}
     <div class="card border-{% if c.up %}success{% else %}danger{% endif %} my-2">
       <div class="card-body">
-          <div class="row">
-              <div class="col-sm-9">
-                  {{ c.title }} - <small>{{ c.desc }}</small>
-              </div>
-              <div class="col-sm-3">
-                  <button type="button" class="btn btn-{% if c.up %}success{% else %}danger{% endif %} mr-2"
-                          style="cursor:default;">{% if c.up %}Online{% else %}Down{% endif %}</button>
-              </div>
-          </div>
+          {{ c.title }} - <span class="text-muted">{{ c.desc }}</span>
+          <span class="badge badge-{% if c.up %}success{% else %}danger{% endif %} float-right">
+              {% if c.up %}Online{% else %}Down{% endif %}</span>
       </div>
     </div>
     {% endfor %}
@@ -52,7 +46,7 @@
         <p>Status Updated on {{ meta.updated.strftime('%D at %T') }}</p>
     </div>
 
-    <script type="text/javascript" src="static/main.js"></script>
+    {#<script type="text/javascript" src="static/main.js"></script>#}
 </div>
 </body>
 </html>
